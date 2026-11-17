@@ -85,15 +85,6 @@
     btnRefreshTop: document.getElementById('btnRefreshTop'),
     fabRefresh: document.getElementById('fabRefresh'),
     fabIcon: document.getElementById('fabIcon'),
-    androidInstallBanner: document.getElementById('androidInstallBanner'),
-    btnInstallDirect: document.getElementById('btnInstallDirect'),
-    btnDismissInstall: document.getElementById('btnDismissInstall'),
-    btnInstallHeader: document.getElementById('btnInstallHeader'),
-    nativeInstallBox: document.getElementById('nativeInstallBox'),
-    btnTriggerNativeInstall: document.getElementById('btnTriggerNativeInstall'),
-    lanUrlCode: document.getElementById('lanUrlCode'),
-    btnCopyLanUrl: document.getElementById('btnCopyLanUrl'),
-    qrContainer: document.getElementById('qrContainer'),
     mapBusStatusFooter: document.getElementById('mapBusStatusFooter'),
     toastMessage: document.getElementById('toastMessage')
   };
@@ -659,15 +650,6 @@
       tab.addEventListener('click', () => switchView(tab.dataset.target));
     });
 
-    // Botón Header "App Celu"
-    els.btnInstallHeader.addEventListener('click', () => {
-      if (state.deferredInstallPrompt) {
-        triggerNativeInstall();
-      } else {
-        switchView('viewInstalar');
-      }
-    });
-
     // Filtros de paradas
     document.querySelectorAll('.filter-chip').forEach((chip) => {
       chip.addEventListener('click', () => {
@@ -751,13 +733,6 @@
         state.map.setView([loc.lat, loc.lng], 15);
       });
     });
-
-    // Copiar URL LAN
-    els.btnCopyLanUrl.addEventListener('click', () => {
-      const text = els.lanUrlCode.textContent;
-      navigator.clipboard?.writeText(text);
-      showToast('📋 Dirección copiada al portapapeles');
-    });
   }
 
   function setActiveFilter(filterVal) {
@@ -790,53 +765,6 @@
     );
   }
 
-  // =========================================================================
-  // 8. INSTALACIÓN PWA EN ANDROID Y QR DE CONEXIÓN LOCAL
-  // =========================================================================
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    state.deferredInstallPrompt = e;
-    els.androidInstallBanner.classList.remove('hidden');
-    els.nativeInstallBox.classList.remove('hidden');
-  });
-
-  async function triggerNativeInstall() {
-    if (!state.deferredInstallPrompt) return;
-    state.deferredInstallPrompt.prompt();
-    const { outcome } = await state.deferredInstallPrompt.userChoice;
-    if (outcome === 'accepted') {
-      els.androidInstallBanner.classList.add('hidden');
-      els.nativeInstallBox.classList.add('hidden');
-      showToast('🎉 ¡Aplicación OK SUR instalada en tu Android!');
-    }
-    state.deferredInstallPrompt = null;
-  }
-
-  els.btnInstallDirect.addEventListener('click', triggerNativeInstall);
-  els.btnTriggerNativeInstall.addEventListener('click', triggerNativeInstall);
-  els.btnDismissInstall.addEventListener('click', () => {
-    els.androidInstallBanner.classList.add('hidden');
-  });
-
-  async function loadServerNetworkInfo() {
-    try {
-      const res = await fetch('/api/info?api=info');
-      const info = await res.json();
-      const targetUrl =
-        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? info.lanUrl
-          : window.location.origin;
-
-      els.lanUrlCode.textContent = targetUrl;
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-        targetUrl
-      )}`;
-      els.qrContainer.innerHTML = `<img src="${qrApi}" alt="Código QR para abrir en el celular" loading="lazy" />`;
-    } catch (_) {
-      els.lanUrlCode.textContent = window.location.origin;
-    }
-  }
-
   // Registrar Service Worker para que Android permita instalarla como App nativa
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -853,6 +781,5 @@
   renderStops();
   fetchArribos(false);
   loadRecorridos();
-  loadServerNetworkInfo();
   setInterval(tickCountdown, 1000);
 })();

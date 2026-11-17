@@ -57,9 +57,6 @@
           <button id="btnGlobalAlarm" class="icon-btn" title="Activar alerta sonora cuando falten 5 min o menos" aria-label="Alerta de llegada">
             <span id="alarmIcon">🔕</span>
           </button>
-          <button id="btnInstallHeader" class="install-pill-btn" title="Instalar como aplicación en Android">
-            📲 <span>App Celu</span>
-          </button>
         </div>
       </div>
 
@@ -77,18 +74,6 @@
         </div>
       </div>
     </header>
-
-    <!-- Banner de Instalación Android (se muestra si se puede instalar en Chrome Android) -->
-    <div id="androidInstallBanner" class="install-banner hidden">
-      <div class="install-banner-info">
-        <strong>📱 Instalá OK SUR en tu pantalla de inicio</strong>
-        <span>Funciona a pantalla completa como app nativa de Android</span>
-      </div>
-      <div class="install-banner-actions">
-        <button id="btnInstallDirect" class="btn-primary-sm">Instalar</button>
-        <button id="btnDismissInstall" class="btn-ghost-sm" aria-label="Cerrar">✕</button>
-      </div>
-    </div>
 
     <!-- Contenido Principal -->
     <main class="app-main">
@@ -154,79 +139,6 @@
           Tocá una parada o un colectivo 🚌 en el mapa para ver a qué hora llega.
         </div>
       </section>
-
-      <!-- VISTA 3: CÓMO INSTALAR EN ANDROID / QR -->
-      <section id="viewInstalar" class="view-section">
-        <div class="install-guide-card">
-          <div class="guide-header">
-            <img src="/icons/icon.svg" alt="Icono OK SUR" class="guide-app-icon" />
-            <div>
-              <h2>Usar como App en tu Android</h2>
-              <p>Agregá OK SUR a la pantalla principal de tu celular para abrirla con un toque.</p>
-            </div>
-          </div>
-
-          <div id="nativeInstallBox" class="native-install-box hidden">
-            <button id="btnTriggerNativeInstall" class="btn-install-big">
-              📲 Instalar Aplicación Ahora
-            </button>
-          </div>
-
-          <div class="steps-list">
-            <div class="step-item">
-              <div class="step-num">1</div>
-              <div>
-                <strong>Abrí esta página en Chrome de tu celular Android</strong>
-                <p>Si estás viendo esto en tu computadora, escaneá el código QR de abajo o copiá la dirección en el navegador de tu celular.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">2</div>
-              <div>
-                <strong>Tocá el menú de 3 puntitos (⋮) arriba a la derecha</strong>
-                <p>En Google Chrome para Android, elegí la opción <strong>"Agregar a la pantalla principal"</strong> o <strong>"Instalar aplicación"</strong>.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">3</div>
-              <div>
-                <strong>¡Listo! Ya tenés el ícono "OK SUR" en tu celu</strong>
-                <p>Se abrirá en pantalla completa sin barras del navegador y mostrará a qué hora exacta llega el colectivo en tus 3 paradas.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Caja de conexión Wi-Fi / QR -->
-          <div class="lan-connect-box">
-            <h3>📡 Abrir en tu celular por Wi-Fi local</h3>
-            <p class="lan-hint">Asegurate de que tu celular esté conectado al mismo Wi-Fi que esta PC y entrá a:</p>
-            <div class="lan-url-row">
-              <code id="lanUrlCode">Cargando dirección...</code>
-              <button id="btnCopyLanUrl" class="btn-copy">Copiar</button>
-            </div>
-            <div id="qrContainer" class="qr-box"></div>
-          </div>
-
-          <!-- Resumen técnico de las 3 paradas configuradas -->
-          <div class="configured-stops-summary">
-            <h3>🎯 Paradas Oficiales Configuradas (Línea OK - 358)</h3>
-            <ul>
-              <li>
-                <strong>1. Chacabuco y Pedernera (Hacia 500 Sur)</strong>
-                <span>Parada <code>SL10094</code> • Ref: <code>chacabuco,pedernera,500sur</code></span>
-              </li>
-              <li>
-                <strong>2. Mirador del Portezuelo, Parada 2 (Hacia Centro)</strong>
-                <span>Parada <code>SL10052</code> • Ref: <code>miradordelportezuelo,parada2,haciacentro</code></span>
-              </li>
-              <li>
-                <strong>3. Chacabuco y 9 de Julio (Hacia 500 Sur)</strong>
-                <span>Parada <code>SL10096</code> • Ref: <code>chacabuco,9dejulio,hacia500sur</code></span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
     </main>
 
     <!-- Botón Flotante de Actualizar Rápido -->
@@ -244,10 +156,6 @@
       <button class="nav-tab" data-target="viewMapa">
         <span class="nav-icon">🗺️</span>
         <span class="nav-text">Mapa en Vivo</span>
-      </button>
-      <button class="nav-tab" data-target="viewInstalar">
-        <span class="nav-icon">📲</span>
-        <span class="nav-text">App Android</span>
       </button>
     </nav>
   </div>
