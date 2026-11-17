@@ -482,7 +482,7 @@
 
   async function loadRecorridos() {
     try {
-      const res = await fetch('/api/recorrido');
+      const res = await fetch('/api/recorrido?api=recorrido');
       const data = await res.json();
       if (data.ok && Array.isArray(data.recorridos)) {
         state.recorridos = data.recorridos;
@@ -610,7 +610,7 @@
     els.liveStatusText.textContent = 'ACTUALIZANDO...';
 
     try {
-      const url = force ? '/api/arribos?force=1' : '/api/arribos';
+      const url = force ? '/api/arribos?api=arribos&force=1' : '/api/arribos?api=arribos';
       const res = await fetch(url);
       const data = await res.json();
 
@@ -820,7 +820,7 @@
 
   async function loadServerNetworkInfo() {
     try {
-      const res = await fetch('/api/info');
+      const res = await fetch('/api/info?api=info');
       const info = await res.json();
       const targetUrl =
         window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'

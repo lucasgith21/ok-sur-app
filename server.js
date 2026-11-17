@@ -44,17 +44,18 @@ async function requestHandler(req, res) {
     const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost';
     const urlObj = new URL(req.url || '/', `http://${host}`);
     const pathname = urlObj.pathname;
+    const apiParam = urlObj.searchParams.get('api');
 
-    // 1. Rutas de la API
-    if (pathname === '/api/arribos' || pathname === '/api/arribos.js') {
+    // 1. Rutas de la API (soportando tanto pathname directo como query ?api=... tras rewrites de Vercel)
+    if (apiParam === 'arribos' || pathname.includes('/arribos')) {
       return await arribosHandler(req, res);
     }
 
-    if (pathname === '/api/recorrido' || pathname === '/api/recorrido.js') {
+    if (apiParam === 'recorrido' || pathname.includes('/recorrido')) {
       return await recorridoHandler(req, res);
     }
 
-    if (pathname === '/api/info' || pathname === '/api/info.js') {
+    if (apiParam === 'info' || pathname.includes('/info')) {
       if (process.env.VERCEL) {
         return infoHandler(req, res);
       }
