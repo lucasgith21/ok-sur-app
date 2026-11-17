@@ -2,7 +2,6 @@
   "name": "ok-sur-cuando-llega-pwa",
   "version": "1.0.0",
   "description": "Aplicación web progresiva (PWA) para Android - Horarios y seguimiento en tiempo real del colectivo OK SUR (Transpuntano San Luis)",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
