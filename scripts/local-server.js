@@ -3,11 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const arribosHandler = require('./api/arribos');
-const recorridoHandler = require('./api/recorrido');
+const arribosHandler = require('../api/arribos');
+const recorridoHandler = require('../api/recorrido');
 
 const PORT = process.env.PORT || 3000;
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -38,7 +38,6 @@ const server = http.createServer(async (req, res) => {
     const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const pathname = urlObj.pathname;
 
-    // Endpoints de la API
     if (pathname === '/api/arribos') {
       return await arribosHandler(req, res);
     }
@@ -62,7 +61,6 @@ const server = http.createServer(async (req, res) => {
       );
     }
 
-    // Archivos estáticos de /public
     let safePath = path.normalize(pathname).replace(/^(\.\.[/\\])+/, '');
     if (safePath === '/' || safePath === '\\') {
       safePath = '/index.html';
@@ -85,7 +83,6 @@ const server = http.createServer(async (req, res) => {
       return fs.createReadStream(filePath).pipe(res);
     }
 
-    // Fallback SPA a index.html
     const indexPath = path.join(PUBLIC_DIR, 'index.html');
     if (fs.existsSync(indexPath)) {
       res.statusCode = 200;

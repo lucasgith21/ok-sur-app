@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Aplicación web progresiva (PWA) para Android - Horarios y seguimiento en tiempo real del colectivo OK SUR (Transpuntano San Luis)",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node scripts/local-server.js",
+    "dev": "node scripts/local-server.js"
   },
   "engines": {
     "node": ">=18.0.0"
