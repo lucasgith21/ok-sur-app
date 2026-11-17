@@ -1,0 +1,40 @@
+{
+  "id": "/",
+  "name": "OK SUR • Cuando Llega Transpuntano",
+  "short_name": "OK SUR",
+  "description": "Horarios en vivo y mapa en tiempo real del colectivo OK SUR (Transpuntano San Luis) en Chacabuco y Pedernera, Chacabuco y 9 de Julio, y Mirador del Portezuelo Parada 2.",
+  "lang": "es-AR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1120",
+  "theme_color": "#0f172a",
+  "categories": ["navigation", "travel", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

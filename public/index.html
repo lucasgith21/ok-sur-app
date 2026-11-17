@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="OK SUR" />
+  <meta name="description" content="A qué hora llega el colectivo OK SUR en vivo (Transpuntano San Luis) - Chacabuco y Pedernera, Chacabuco y 9 de Julio, y Mirador del Portezuelo Parada 2." />
+
+  <title>OK SUR • ¿A qué hora llega?</title>
+
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS para el Mapa en Vivo -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Barra de progreso de auto-actualización -->
+    <div class="refresh-progress-track">
+      <div id="refreshProgressBar" class="refresh-progress-bar"></div>
+    </div>
+
+    <!-- Header estilo App Android -->
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-identity">
+          <div class="bus-badge-icon">
+            <span>OK</span>
+            <small>SUR</small>
+          </div>
+          <div>
+            <div class="title-with-live">
+              <h1>OK SUR</h1>
+              <span id="liveStatusPill" class="live-pill">
+                <span class="pulse-dot"></span>
+                <span id="liveStatusText">EN VIVO</span>
+              </span>
+            </div>
+            <p class="subtitle">Transpuntano • Línea 358 • San Luis</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="btnGlobalAlarm" class="icon-btn" title="Activar alerta sonora cuando falten 5 min o menos" aria-label="Alerta de llegada">
+            <span id="alarmIcon">🔕</span>
+          </button>
+          <button id="btnInstallHeader" class="install-pill-btn" title="Instalar como aplicación en Android">
+            📲 <span>App Celu</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Reloj Actual y Próxima Actualización -->
+      <div class="clock-status-bar">
+        <div class="clock-box">
+          <span class="clock-label">Hora actual:</span>
+          <strong id="currentClock" class="mono-time">--:--:--</strong>
+        </div>
+        <div class="sync-box">
+          <span id="lastSyncText">Conectando...</span>
+          <button id="btnRefreshTop" class="mini-refresh-btn" title="Actualizar ahora">
+            🔄 <span id="countdownText">25s</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Banner de Instalación Android (se muestra si se puede instalar en Chrome Android) -->
+    <div id="androidInstallBanner" class="install-banner hidden">
+      <div class="install-banner-info">
+        <strong>📱 Instalá OK SUR en tu pantalla de inicio</strong>
+        <span>Funciona a pantalla completa como app nativa de Android</span>
+      </div>
+      <div class="install-banner-actions">
+        <button id="btnInstallDirect" class="btn-primary-sm">Instalar</button>
+        <button id="btnDismissInstall" class="btn-ghost-sm" aria-label="Cerrar">✕</button>
+      </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="app-main">
+      <!-- VISTA 1: PARADAS Y HORARIOS -->
+      <section id="viewParadas" class="view-section active">
+        <!-- Resumen Rápido del Colectivo más próximo -->
+        <div id="quickHeroBanner" class="hero-summary-card">
+          <div class="hero-left">
+            <span class="hero-eyebrow">⚡ PRÓXIMO OK SUR EN LLEGAR</span>
+            <h2 id="heroStopName">Consultando paradas en vivo...</h2>
+            <p id="heroStopDirection">Conectando con SmartMovePro Transpuntano</p>
+          </div>
+          <div class="hero-right">
+            <div id="heroTimeClock" class="hero-clock mono-time">--:--</div>
+            <div id="heroEtaBadge" class="hero-eta-badge">Cargando</div>
+          </div>
+        </div>
+
+        <!-- Filtros rápidos de sentido / GPS -->
+        <div class="filter-tabs" role="tablist">
+          <button class="filter-chip active" data-filter="all">
+            Todas <span class="chip-count">3</span>
+          </button>
+          <button class="filter-chip" data-filter="500sur">
+            🟠 Hacia 500 Sur <span class="chip-count">2</span>
+          </button>
+          <button class="filter-chip" data-filter="haciacentro">
+            🔵 Hacia Centro <span class="chip-count">1</span>
+          </button>
+          <button id="btnSortNearest" class="filter-chip gps-chip" data-filter="nearest">
+            📍 Más cercana
+          </button>
+        </div>
+
+        <!-- Contenedor de las 3 Tarjetas de Paradas -->
+        <div id="stopsContainer" class="stops-grid">
+          <!-- Renderizado dinámico por app.js -->
+        </div>
+      </section>
+
+      <!-- VISTA 2: MAPA EN VIVO GPS -->
+      <section id="viewMapa" class="view-section">
+        <div class="map-controls-bar">
+          <div class="map-legend">
+            <span class="legend-item"><i class="dot dot-500sur"></i> Hacia 500 Sur</span>
+            <span class="legend-item"><i class="dot dot-centro"></i> Hacia Centro</span>
+            <span class="legend-item">🚌 Colectivo GPS</span>
+          </div>
+          <div class="map-btn-group">
+            <button id="btnCenterAll" class="map-ctrl-btn">Ver Todo</button>
+            <button id="btnMyLocationMap" class="map-ctrl-btn">📍 Mi Ubicación</button>
+          </div>
+        </div>
+
+        <div class="map-quick-stops">
+          <button class="map-stop-pill" data-stop="SL10094">Chacabuco y Pedernera</button>
+          <button class="map-stop-pill" data-stop="SL10096">Chacabuco y 9 de Julio</button>
+          <button class="map-stop-pill" data-stop="SL10052">Mirador • Parada 2</button>
+        </div>
+
+        <div id="liveMap" class="live-map-container"></div>
+        <div id="mapBusStatusFooter" class="map-footer-info">
+          Tocá una parada o un colectivo 🚌 en el mapa para ver a qué hora llega.
+        </div>
+      </section>
+
+      <!-- VISTA 3: CÓMO INSTALAR EN ANDROID / QR -->
+      <section id="viewInstalar" class="view-section">
+        <div class="install-guide-card">
+          <div class="guide-header">
+            <img src="/icons/icon.svg" alt="Icono OK SUR" class="guide-app-icon" />
+            <div>
+              <h2>Usar como App en tu Android</h2>
+              <p>Agregá OK SUR a la pantalla principal de tu celular para abrirla con un toque.</p>
+            </div>
+          </div>
+
+          <div id="nativeInstallBox" class="native-install-box hidden">
+            <button id="btnTriggerNativeInstall" class="btn-install-big">
+              📲 Instalar Aplicación Ahora
+            </button>
+          </div>
+
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div>
+                <strong>Abrí esta página en Chrome de tu celular Android</strong>
+                <p>Si estás viendo esto en tu computadora, escaneá el código QR de abajo o copiá la dirección en el navegador de tu celular.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div>
+                <strong>Tocá el menú de 3 puntitos (⋮) arriba a la derecha</strong>
+                <p>En Google Chrome para Android, elegí la opción <strong>"Agregar a la pantalla principal"</strong> o <strong>"Instalar aplicación"</strong>.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div>
+                <strong>¡Listo! Ya tenés el ícono "OK SUR" en tu celu</strong>
+                <p>Se abrirá en pantalla completa sin barras del navegador y mostrará a qué hora exacta llega el colectivo en tus 3 paradas.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caja de conexión Wi-Fi / QR -->
+          <div class="lan-connect-box">
+            <h3>📡 Abrir en tu celular por Wi-Fi local</h3>
+            <p class="lan-hint">Asegurate de que tu celular esté conectado al mismo Wi-Fi que esta PC y entrá a:</p>
+            <div class="lan-url-row">
+              <code id="lanUrlCode">Cargando dirección...</code>
+              <button id="btnCopyLanUrl" class="btn-copy">Copiar</button>
+            </div>
+            <div id="qrContainer" class="qr-box"></div>
+          </div>
+
+          <!-- Resumen técnico de las 3 paradas configuradas -->
+          <div class="configured-stops-summary">
+            <h3>🎯 Paradas Oficiales Configuradas (Línea OK - 358)</h3>
+            <ul>
+              <li>
+                <strong>1. Chacabuco y Pedernera (Hacia 500 Sur)</strong>
+                <span>Parada <code>SL10094</code> • Ref: <code>chacabuco,pedernera,500sur</code></span>
+              </li>
+              <li>
+                <strong>2. Mirador del Portezuelo, Parada 2 (Hacia Centro)</strong>
+                <span>Parada <code>SL10052</code> • Ref: <code>miradordelportezuelo,parada2,haciacentro</code></span>
+              </li>
+              <li>
+                <strong>3. Chacabuco y 9 de Julio (Hacia 500 Sur)</strong>
+                <span>Parada <code>SL10096</code> • Ref: <code>chacabuco,9dejulio,hacia500sur</code></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Botón Flotante de Actualizar Rápido -->
+    <button id="fabRefresh" class="fab-refresh" aria-label="Actualizar horarios ahora">
+      <span id="fabIcon" class="fab-icon">🔄</span>
+      <span class="fab-label">Actualizar</span>
+    </button>
+
+    <!-- Barra de Navegación Inferior estilo Android Material 3 -->
+    <nav class="bottom-nav" aria-label="Navegación principal">
+      <button class="nav-tab active" data-target="viewParadas">
+        <span class="nav-icon">🚏</span>
+        <span class="nav-text">A qué hora llega</span>
+      </button>
+      <button class="nav-tab" data-target="viewMapa">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-text">Mapa en Vivo</span>
+      </button>
+      <button class="nav-tab" data-target="viewInstalar">
+        <span class="nav-icon">📲</span>
+        <span class="nav-text">App Android</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Toast de Notificación / Alerta -->
+  <div id="toastMessage" class="toast hidden"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/app.js"></script>
+</body>
+</html>
