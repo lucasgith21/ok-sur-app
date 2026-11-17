@@ -2,8 +2,53 @@
   const REFRESH_INTERVAL_SEC = 25;
   const ALARM_THRESHOLD_MIN = 5;
 
+  const INITIAL_PARADAS = [
+    {
+      id: 'chacabuco-pedernera-500sur',
+      identificador: 'SL10094',
+      nombre: 'Chacabuco y Pedernera',
+      sentido: 'Hacia Bº 500 Viv. Sur',
+      sentidoCorto: '500 SUR',
+      grupo: '500sur',
+      referenciaUsuario: 'chacabuco,pedernera,500sur',
+      latitud: -33.300135,
+      longitud: -66.339954,
+      arribos: [],
+      proximoArribo: null,
+      error: 'Consultando Transpuntano en vivo...'
+    },
+    {
+      id: 'chacabuco-9dejulio-500sur',
+      identificador: 'SL10096',
+      nombre: 'Chacabuco y 9 de Julio',
+      sentido: 'Hacia Bº 500 Viv. Sur',
+      sentidoCorto: '500 SUR',
+      grupo: '500sur',
+      referenciaUsuario: 'chacabuco,9dejulio,hacia500sur',
+      latitud: -33.306826,
+      longitud: -66.337851,
+      arribos: [],
+      proximoArribo: null,
+      error: 'Consultando Transpuntano en vivo...'
+    },
+    {
+      id: 'mirador-parada2-centro',
+      identificador: 'SL10052',
+      nombre: 'Mirador del Portezuelo • Parada 2',
+      sentido: 'Hacia el Centro',
+      sentidoCorto: 'HACIA CENTRO',
+      grupo: 'haciacentro',
+      referenciaUsuario: 'miradordelportezuelo,parada2,haciacentro',
+      latitud: -33.328082,
+      longitud: -66.310193,
+      arribos: [],
+      proximoArribo: null,
+      error: 'Consultando Transpuntano en vivo...'
+    }
+  ];
+
   const state = {
-    paradas: [],
+    paradas: INITIAL_PARADAS,
     recorridos: [],
     filter: 'all',
     userLocation: null, // { lat, lng }
@@ -805,6 +850,7 @@
   updateGlobalAlarmUi();
   updateClock();
   setupEventListeners();
+  renderStops();
   fetchArribos(false);
   loadRecorridos();
   loadServerNetworkInfo();

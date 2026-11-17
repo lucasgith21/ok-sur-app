@@ -1,6 +1,9 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/server.js" }
+    { "source": "/api/arribos", "destination": "/api/arribos" },
+    { "source": "/api/recorrido", "destination": "/api/recorrido" },
+    { "source": "/api/info", "destination": "/api/info" },
+    { "source": "/(.*)", "destination": "/api/index" }
   ]
 }
