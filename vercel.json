@@ -1,8 +1,4 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/arribos", "destination": "/api/arribos.js" },
-    { "source": "/api/recorrido", "destination": "/api/recorrido.js" },
-    { "source": "/(.*)", "destination": "/public/$1" }
-  ]
+  "outputDirectory": "public"
 }
